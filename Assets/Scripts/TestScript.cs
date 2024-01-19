@@ -8,6 +8,7 @@ public class TestScript : MonoBehaviour
     void Start()
     {
         UnityEngine.Debug.Log("Žë–ì—T‘¾‚Å‚·");
+        UnityEngine.Debug.Log("“¡ˆä—§‹P‚Å‚·");
     }
 
     // Update is called once per frame
