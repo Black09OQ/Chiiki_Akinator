@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
 namespace WorkRegisterScene
@@ -8,19 +9,16 @@ namespace WorkRegisterScene
     {
         [SerializeField] GameObject workListPanel;
         [SerializeField] GameObject workRegisterPanel;
-        [SerializeField] DataLoder dataLoder;
 
-        public List<Work> workList;
         // Start is called before the first frame update
         void Start()
         {
-            workList = dataLoder.LoadData();
+            SetWorkListPanelActive();
         }
 
-        public void RegistWork()
+        public void ResistWork()
         {
-            Work w = new Work() {workID = workList.Count};
-            workRegisterPanel.GetComponent<WorkRegisterPanel>().SetWork(w);
+            workRegisterPanel.GetComponent<WorkRegisterPanel>().SetWork(new Work() { Name = null });
             SetWorkRegisterPanelActive();
         }
 
@@ -30,13 +28,10 @@ namespace WorkRegisterScene
             SetWorkRegisterPanelActive();
         }
 
-        public void AddWork(Work work)
+        public void AssignWork()
         {
-            workList.Add(work);
             SetWorkListPanelActive();
         }
-
-
 
         void SetWorkListPanelActive()
         {

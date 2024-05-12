@@ -12,24 +12,31 @@ namespace WorkRegisterScene
         [SerializeField] TextMeshProUGUI workNameTMP;
         [SerializeField] Button editButton;
 
-        WorkRegisterSceneController controller;
+        WorkListPanel parent;
 
         private Work work;
 
         private void Start()
         {
-            controller = GameObject.Find("WorkRegisterSceneController").GetComponent<WorkRegisterSceneController>();
+            parent = GameObject.Find("WorkListPanel").GetComponent<WorkListPanel>();
+            editButton.onClick.AddListener(OnEditButtonDown);
         }
 
-        public void SetWorkTMP(string id, string workName)
+        public void SetWork(Work w)
         {
-            workIDTMP.SetText(id);
-            workNameTMP.SetText(workName);
+            work = w;
+            SetWorkTMP();
+        }
+
+        void SetWorkTMP()
+        {
+            workIDTMP.SetText(work.ID.ToString());
+            workNameTMP.SetText(work.Name);
         }
 
         public void OnEditButtonDown()
         {
-            controller.EditWork(work);
+            parent.EditWork(work);
         }
     }
 

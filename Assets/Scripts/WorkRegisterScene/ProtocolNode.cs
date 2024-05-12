@@ -2,22 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 namespace WorkRegisterScene
 {
     public class ProtocolNode : MonoBehaviour
     {
-        [SerializeField] TextMeshProUGUI protocolID;
+        [SerializeField] TextMeshProUGUI orderTMP;
         [SerializeField] TMP_InputField protocolInput;
-        public string protocol { get { return protocolInput.text; } }
+        public Protocol protocol;
 
-        public void SetProtocolID(int id)
+        public void SetProtocol(Protocol p)
         {
-            protocolID.SetText(id.ToString());
+            protocol = p;
+            SetProtocolTMP();
         }
-        public void SetInputText(string protocol)
+
+        public void SetProtocolData(int workID)
         {
-            protocolInput.text = protocol;
+            protocol.Name = protocolInput.text;
+            protocol.Order = Convert.ToInt32(orderTMP.text);
+            protocol.WorkID = workID;
+        }
+
+        private void SetProtocolTMP()
+        {
+            orderTMP.SetText(protocol.Order.ToString());
+            protocolInput.text = protocol.Name;
         }
     }
 }
