@@ -44,21 +44,27 @@ namespace WorkRegisterScene
         {
             Init();
             
-            // 作成済み作業の場合、作業名をInputFieldに書き込む
-            if(work.Name != null)
-            {
-                workNameInput.text = work.Name;
+            if(work != null){
+                // 作成済み作業の場合、作業名をInputFieldに書き込む
+                if(work.Name != null)
+                {
+                    workNameInput.text = work.Name;
+                }
+
+                // 作業手順が存在する場合、ProtocolNodeを生成して書き込む
+                protocols = dataManager.GetProtocolsByWorkId(work.ID);
+                foreach (Protocol protocol in protocols)
+                {
+                    GameObject obj = Instantiate(ProtocolNodePrefab, ProtocolListPanel.transform);
+                    ProtocolNode node = obj.GetComponent<ProtocolNode>();
+                    node.SetProtocol(protocol);
+                    protocolNodes.Add(obj);
+                }
             }
+
+
             
-            // 作業手順が存在する場合、ProtocolNodeを生成して書き込む
-            protocols = dataManager.GetProtocolsByWorkId(work.ID);
-            foreach (Protocol protocol in protocols)
-            {
-                GameObject obj = Instantiate(ProtocolNodePrefab, ProtocolListPanel.transform);
-                ProtocolNode node = obj.GetComponent<ProtocolNode>();
-                node.SetProtocol(protocol);
-                protocolNodes.Add(obj);
-            }
+
         }
 
         void OnDisable()
@@ -117,7 +123,7 @@ namespace WorkRegisterScene
 
         }
 
-        public void CancelResist(){
+        public void CancelRegist(){
             controller.AssignWork();
         }
     }

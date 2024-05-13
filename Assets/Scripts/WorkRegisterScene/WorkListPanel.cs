@@ -42,7 +42,7 @@ namespace WorkRegisterScene
 
         public void RegistWork()
         {
-            controller.ResistWork();
+            controller.RegistWork();
         }
 
         public void EditWork(Work work)

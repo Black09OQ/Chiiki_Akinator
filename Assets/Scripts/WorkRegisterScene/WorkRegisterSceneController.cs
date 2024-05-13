@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace WorkRegisterScene
 {
@@ -16,7 +14,7 @@ namespace WorkRegisterScene
             SetWorkListPanelActive();
         }
 
-        public void ResistWork()
+        public void RegistWork()
         {
             workRegisterPanel.GetComponent<WorkRegisterPanel>().SetWork(new Work() { Name = null });
             SetWorkRegisterPanelActive();
@@ -31,6 +29,11 @@ namespace WorkRegisterScene
         public void AssignWork()
         {
             SetWorkListPanelActive();
+        }
+
+        public void MoveHomeScene()
+        {
+            SceneManager.LoadScene("HomeScene");
         }
 
         void SetWorkListPanelActive()
