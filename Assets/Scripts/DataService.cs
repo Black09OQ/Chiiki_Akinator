@@ -8,6 +8,7 @@ public static class DataService
 {
     private static SQLiteConnection _database;
 
+    // データベースの初期設定 --------------------------------------------------------------------------------
     public static void InitDatabase(string databaseName)
     {
         try
@@ -21,6 +22,7 @@ public static class DataService
         }
     }
 
+    // データベースを閉じる ----------------------------------------------------------------------------------
     public static void CloseDatabase()
     {
         if(_database != null)
@@ -36,6 +38,7 @@ public static class DataService
         }
     }
 
+    // テーブルの作成 ----------------------------------------------------------------------------------------
     public static void CreateTable()
     {
 
@@ -43,6 +46,7 @@ public static class DataService
         {
             _database.CreateTable<Work>();
             _database.CreateTable<Protocol>();
+            _database.CreateTable<User>();
         }
         catch(Exception e)
         {
@@ -51,6 +55,60 @@ public static class DataService
 
     }
 
+    // User --------------------------------------------------------------------------------------------------
+    public static void InsertUser(User user)
+    {
+        try
+        {
+            _database.Insert(user);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to insert user: {e.Message}");
+        }
+    }
+
+    public static List<User> GetAllUsers()
+    {
+        try
+        {
+            return _database.Table<User>().ToList();
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to get users: {e.Message}");
+            return new List<User>();
+        }
+    }
+
+    public static List<User> GetUsersById(int id)
+    {
+        try
+        {
+            return _database.Table<User>().Where(u => u.ID == id).ToList();
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to get users: {e.Message}");
+            return new List<User>();
+        }
+    }
+
+    public static List<User> GetUsersByUserId(string userId)
+    {
+        try
+        {
+            return _database.Table<User>().Where(u => u.UserID == userId).ToList();
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to get users: {e.Message}");
+            return new List<User>();
+        }
+    }
+
+
+    // Work --------------------------------------------------------------------------------------------------
     public static void InsertWork(Work work)
     {
         try
@@ -72,30 +130,6 @@ public static class DataService
         catch(Exception e)
         {
             Debug.LogError($"Failed to update work: {e.Message}");
-        }
-    } 
-
-    public static void InsertProtocol(Protocol protocol)
-    {
-        try
-        {
-            _database.Insert(protocol);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Failed to insert protocol: {e.Message}");
-        }
-    }
-
-    public static void UpdateProtocol(Protocol protocol)
-    {
-        try
-        {
-            _database.Update(protocol);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Failed to insert protocol: {e.Message}");
         }
     }
 
@@ -122,6 +156,31 @@ public static class DataService
         {
             Debug.LogError($"Failed to get works: {e.Message}");
             return new List<Work>();
+        }
+    }
+
+    // Protocol -----------------------------------------------------------------------------------------------
+    public static void InsertProtocol(Protocol protocol)
+    {
+        try
+        {
+            _database.Insert(protocol);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to insert protocol: {e.Message}");
+        }
+    }
+
+    public static void UpdateProtocol(Protocol protocol)
+    {
+        try
+        {
+            _database.Update(protocol);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to insert protocol: {e.Message}");
         }
     }
 
