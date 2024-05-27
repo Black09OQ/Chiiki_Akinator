@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace WorkSelectScene
 {
@@ -14,7 +15,8 @@ namespace WorkSelectScene
         }
         public void StartWork(Work work)
         {
-
+            UserData.work = work;
+            SceneManager.LoadScene("WorkScene");
         }
     }
 }

@@ -47,6 +47,7 @@ public static class DataService
             _database.CreateTable<Work>();
             _database.CreateTable<Protocol>();
             _database.CreateTable<User>();
+            _database.CreateTable<Question>();
         }
         catch(Exception e)
         {
@@ -188,7 +189,7 @@ public static class DataService
     {
         try
         {
-            return _database.Table<Protocol>().Where(p => p.ID == id).ToList();
+            return _database.Table<Protocol>().Where(p => p.ID == id).OrderBy(p => p.Order).ToList();
         }
         catch(Exception e)
         {
@@ -207,6 +208,33 @@ public static class DataService
         {
             Debug.LogError($"Failed to get protocols: {e.Message}");
             return new List<Protocol>();
+        }
+    }
+
+    // Question ----------------------------------------------------------------------------------------------------
+
+    public static void InsertQuestions(List<Question> questions)
+    {
+        try
+        {
+            _database.Insert(questions);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to insert questions: {e.Message}");
+        }
+    }
+
+    public static List<Question> GetQuestionsByWorkId(int workId)
+    {
+        try
+        {
+            return _database.Table<Question>().Where(p => p.WorkID == workId).ToList();
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to get questions: {e.Message}");
+            return new List<Question>();
         }
     }
 

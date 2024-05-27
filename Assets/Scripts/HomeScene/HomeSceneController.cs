@@ -5,7 +5,7 @@ public class HomeSceneController : MonoBehaviour
 {
     public void MoveWorkScene()
     {
-        SceneManager.LoadScene("WorkScene");
+        SceneManager.LoadScene("WorkSelectScene");
     }
 
     public void MoveManualScene()
