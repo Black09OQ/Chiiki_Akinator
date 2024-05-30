@@ -1277,7 +1277,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1054149624
 GameObject:
@@ -1424,7 +1424,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3314093888296549074, guid: 726d7dfefa558d444926aa53b1021668, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3314093888296549074, guid: 726d7dfefa558d444926aa53b1021668, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1756,51 +1756,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468738543}
   m_CullTransparentMesh: 1
---- !u!1 &1490980834
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1490980836}
-  - component: {fileID: 1490980837}
-  m_Layer: 0
-  m_Name: VoiceText
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1490980836
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1490980834}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1490980837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1490980834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2efa278ef65ed14438e0eeecfd6dec14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text_: {fileID: 492073938}
 --- !u!1 &1542092267
 GameObject:
   m_ObjectHideFlags: 0
@@ -2128,7 +2083,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1721010723
 GameObject:
@@ -2141,6 +2096,8 @@ GameObject:
   - component: {fileID: 1721010725}
   - component: {fileID: 1721010724}
   - component: {fileID: 1721010726}
+  - component: {fileID: 1721010728}
+  - component: {fileID: 1721010727}
   m_Layer: 0
   m_Name: WorkSceneManager
   m_TagString: Untagged
@@ -2163,8 +2120,12 @@ MonoBehaviour:
   dataManager: {fileID: 1453702502}
   workTMP: {fileID: 1054149626}
   protocolTMP: {fileID: 79356395}
-  voiceText: {fileID: 1490980837}
+  voiceText: {fileID: 1721010728}
   movieHandler: {fileID: 1721010726}
+  talkHandler: {fileID: 1721010727}
+  audioManager: {fileID: 919645700}
+  workStartButton: {fileID: 1762584197}
+  nextProtocolButton: {fileID: 72906513}
 --- !u!4 &1721010725
 Transform:
   m_ObjectHideFlags: 0
@@ -2178,7 +2139,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1721010726
 MonoBehaviour:
@@ -2197,6 +2158,31 @@ MonoBehaviour:
   stopRecordPath: gopro/camera/shutter/stop
   modeChangePath: gp/gpControl/command/mode?p=0
   getMoviePath: 
+--- !u!114 &1721010727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721010723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97126a0c07c5a334789a482a1461ff77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1721010728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721010723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2efa278ef65ed14438e0eeecfd6dec14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text_: {fileID: 492073938}
 --- !u!1 &1757077907
 GameObject:
   m_ObjectHideFlags: 0

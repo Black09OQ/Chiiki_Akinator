@@ -76,14 +76,19 @@ public class DataManager : MonoBehaviour
         return DataService.GetProtocolsByWorkId(workID);
     }
 
+    public void InsertQuestion(Question question)
+    {
+        DataService.InsertQuestion(question);
+    }
+
     public void InsertQuestions(List<Question> questions)
     {
         DataService.InsertQuestions(questions);
     }
 
-    public List<Question> GetQuestionsByWorkId(int workID)
+    public List<Question> GetQuestionsByProtocolId(int protocolID)
     {
-        return DataService.GetQuestionsByWorkId(workID);
+        return DataService.GetQuestionsByProtocolId(protocolID);
     }
 
 }

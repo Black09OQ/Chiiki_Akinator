@@ -213,6 +213,19 @@ public static class DataService
 
     // Question ----------------------------------------------------------------------------------------------------
 
+    public static void InsertQuestion(Question question)
+    {
+        try
+        {
+            _database.Insert(question);
+            Debug.Log($"Success insert question:\nid: {question.ID}\nname: {question.Name}\nworkid: {question.WorkID}\nprotocolid: {question.ProtocolID}");
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to insert question: {e.Message}");
+        }
+    }
+
     public static void InsertQuestions(List<Question> questions)
     {
         try
@@ -225,11 +238,11 @@ public static class DataService
         }
     }
 
-    public static List<Question> GetQuestionsByWorkId(int workId)
+    public static List<Question> GetQuestionsByProtocolId(int protocolId)
     {
         try
         {
-            return _database.Table<Question>().Where(p => p.WorkID == workId).ToList();
+            return _database.Table<Question>().Where(p => p.ProtocolID == protocolId).ToList();
         }
         catch(Exception e)
         {

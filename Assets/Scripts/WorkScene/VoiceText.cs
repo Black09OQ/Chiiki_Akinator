@@ -36,10 +36,12 @@ namespace WorkScene
             m_DictationRecognizer.DictationHypothesis += DictationRecognizer_DictationHypothesis;
             */
 
-            /*
+            
             // 音声入力停止時に再起動
             m_DictationRecognizer.DictationComplete += (completionCause) =>
             {
+                FinishDectation();
+                /*
                 if (completionCause == DictationCompletionCause.TimeoutExceeded)
                 {
                     //音声認識を起動。
@@ -49,14 +51,20 @@ namespace WorkScene
                 {
                     //その他止まった原因に応じてハンドリング
                 }
+                */
             };
-            */
+            
 
         }
 
         public void StartDictation()
         {
             m_DictationRecognizer.Start();
+        }
+
+        void FinishDectation()
+        {
+
         }
     }
 
