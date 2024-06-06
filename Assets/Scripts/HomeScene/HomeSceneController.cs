@@ -10,7 +10,7 @@ public class HomeSceneController : MonoBehaviour
 
     public void MoveManualScene()
     {
-        SceneManager.LoadScene("ManulaScene");
+        SceneManager.LoadScene("ManualSelectScene");
     }
 
     public void MoveWorkRegisterScene()

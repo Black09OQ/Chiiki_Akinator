@@ -23,7 +23,7 @@ namespace WorkScene
             audioSource.PlayOneShot(detectionStartSound);
         }
 
-        public void PlayCompleteSoud()
+        public void PlayCompleteSound()
         {
             audioSource.PlayOneShot(detectionCompleteSound);
         }

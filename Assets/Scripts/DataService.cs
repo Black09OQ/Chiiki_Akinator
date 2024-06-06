@@ -48,6 +48,8 @@ public static class DataService
             _database.CreateTable<Protocol>();
             _database.CreateTable<User>();
             _database.CreateTable<Question>();
+            _database.CreateTable<Result>();
+            _database.CreateTable<MoviePath>();
         }
         catch(Exception e)
         {
@@ -248,6 +250,60 @@ public static class DataService
         {
             Debug.LogError($"Failed to get questions: {e.Message}");
             return new List<Question>();
+        }
+    }
+
+    // Result -------------------------------------------------------------------------------
+
+    public static void InsertResult(Result result)
+    {
+        try
+        {
+            _database.Insert(result);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to insert result: {e.Message}");
+        }
+    }
+
+    public static List<Result> GetResultsByQuestionId(int questionId)
+    {
+        try
+        {
+            return _database.Table<Result>().Where(r => r.QuestionId == questionId).ToList();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to get result: {e.Message}");
+            return new List<Result>();
+        }
+    }
+
+    // MoviePath -----------------------------------------------------------------------------------
+
+    public static void InsertMoviePath(MoviePath moviePath)
+    {
+        try
+        {
+            _database.Insert(moviePath);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to insert MoviePath: {e.Message}");
+        }
+    }
+
+    public static List<MoviePath> GetMoviePathsByWorkAndUserId(int workId, int userId)
+    {
+        try
+        {
+            return _database.Table<MoviePath>().Where(m => m.WorkID == workId && m.UserID == userId).ToList();
+        }
+        catch(Exception e)
+        {
+            Debug.LogError($"Failed to get MoviePaths: {e.Message}");
+            return new List<MoviePath>();
         }
     }
 

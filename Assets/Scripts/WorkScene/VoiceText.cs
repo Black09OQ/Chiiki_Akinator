@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 using TMPro;
+using Cysharp.Threading.Tasks;
+using System.Threading;
+using System;
+using Unity.VisualScripting;
 
 namespace WorkScene
 {
@@ -8,6 +12,8 @@ namespace WorkScene
     {
         [SerializeField] TextMeshProUGUI text_;
         public DictationRecognizer m_DictationRecognizer;
+
+        [SerializeField] WorkSceneManager manager;
 
         // オブジェクトが破棄されるとき
         private void OnDestroy()
@@ -29,42 +35,35 @@ namespace WorkScene
                 //音声認識した文章はtextで受け取れます。
                 text_.text = text;
             };
+        }
 
-
-            /*
-            // 発音中
-            m_DictationRecognizer.DictationHypothesis += DictationRecognizer_DictationHypothesis;
-            */
-
-            
-            // 音声入力停止時に再起動
-            m_DictationRecognizer.DictationComplete += (completionCause) =>
+        public async UniTask StartDictation(CancellationToken ct)
+        {
+            try
             {
-                FinishDectation();
-                /*
-                if (completionCause == DictationCompletionCause.TimeoutExceeded)
-                {
-                    //音声認識を起動。
-                    m_DictationRecognizer.Start();
-                }
-                else
-                {
-                    //その他止まった原因に応じてハンドリング
-                }
-                */
-            };
-            
-
+                var dicTask = dictationTask(ct);
+                await UniTask.Delay(5000);
+                var delay = UniTask.Delay(15000);
+                await UniTask.WhenAny(dicTask,delay);
+                m_DictationRecognizer.Stop();
+            }
+            catch(OperationCanceledException e)
+            {
+                Debug.Log("Dictation canceled.");
+            }
         }
 
-        public void StartDictation()
+        private async UniTask dictationTask(CancellationToken ct)
         {
-            m_DictationRecognizer.Start();
-        }
-
-        void FinishDectation()
-        {
-
+            try
+            {
+                m_DictationRecognizer.Start();
+                await UniTask.WaitUntil( ()=> m_DictationRecognizer.Status == SpeechSystemStatus.Stopped || m_DictationRecognizer.Status ==  SpeechSystemStatus.Failed);
+            }
+            catch(OperationCanceledException e)
+            {
+                Debug.Log("Dictation canceled.");
+            }
         }
     }
 

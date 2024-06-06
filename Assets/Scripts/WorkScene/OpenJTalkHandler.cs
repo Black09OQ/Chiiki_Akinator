@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -6,9 +7,17 @@ using UnityEngine;
 
 public class OpenJTalkHandler : MonoBehaviour
 {
-    public async UniTask StartSpeak(string text, CancellationToken cts)
+    public async UniTask StartSpeak(string text, CancellationToken ct)
     {
-        await OpenJTalk.SpeakStoppable(text);
+        try
+        {
+            await UniTask.Run(() => OpenJTalk.SpeakStoppable(text));
+        }
+        catch(OperationCanceledException e)
+        {
+            Debug.Log("Speak stopped.");
+            Stop();
+        }
     }
 
     public void Stop()

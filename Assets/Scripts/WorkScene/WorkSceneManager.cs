@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace WorkScene
@@ -12,6 +14,8 @@ namespace WorkScene
         [SerializeField] DataManager dataManager;
         [SerializeField] TextMeshProUGUI workTMP;
         [SerializeField] TextMeshProUGUI protocolTMP;
+        [SerializeField] TextMeshProUGUI questionTMP;
+        [SerializeField] TextMeshProUGUI answerTMP;
         [SerializeField] VoiceText voiceText;
         [SerializeField] MovieHandler movieHandler;
         [SerializeField] OpenJTalkHandler talkHandler;
@@ -62,48 +66,151 @@ namespace WorkScene
             await movieHandler.StartRecording();
             workStartButton.SetActive(false);
             nextProtocolButton.SetActive(true);
-            RunQA(QACTS.Token);
+            /*
+            try
+            {
+                await RunQA(QACTS.Token);
+            }
+            catch(OperationCanceledException)
+            {
+                Debug.Log("RunQA canceled.");
+            }
+            */
+
         }
 
         async UniTask RunQA(CancellationToken cts)
         {
             if(order < protocols.Count)
             {
-                SetProtocols();
+                // protocolTMPに作業手順名を表示
+                protocolTMP.SetText(protocols[order].Name);
+                await UniTask.WaitUntil(() => protocolTMP.text == protocols[order].Name); // 表示完了まで待つ
+
                 List<Question> q = questions[order];
                 foreach(Question question in q)
                 {
+                    // 質問TMPに質問文を表示
+                    questionTMP.SetText(question.Name);
+                    await UniTask.WaitUntil(() => questionTMP.text == question.Name); // 表示完了まで待ち
+                    // 回答TMPの中身を消す
+                    answerTMP.text = "";
+                    await UniTask.WaitUntil(() => answerTMP.text == ""); 
                     try
                     {
-                        await talkHandler.StartSpeak(question.Name, cts);
+                        await talkHandler.StartSpeak(question.Name, QACTS.Token);
                     }
                     catch (OperationCanceledException e)
                     {
+                        Debug.Log("StartSpeak canceled");
                         talkHandler.Stop();
                     }
 
                     try
                     {
-
+                        audioManager.PlayStartSound();
+                        await voiceText.StartDictation(QACTS.Token);
+                        audioManager.PlayCompleteSound();
+                        await UniTask.Delay(1000);
                     }
                     catch (OperationCanceledException e)
                     {
-
+                        Debug.Log("Dictation task canceled");
                     }
+
+                    // 記録処理
+                    Result result = new Result();
+                    result.QuestionId = question.ID;
+                    result.Answer = answerTMP.text;
+                    result.UserId = UserData.Id;
+
+                    dataManager.InsertResult(result);
                 }
+            }
+        }
+
+        public async void MoveNextProtocol()
+        {
+            QACTS.Cancel();
+
+            if(order <= protocols.Count)
+            {
+                order ++;
+            }
+
+            try
+            {
+                await RunQA(QACTS.Token);
+            }
+            catch(OperationCanceledException e)
+            {
+                Debug.Log("QATask Canceled.");
             }
         }
 
         public void StopQA()
         {
             QACTS.Cancel();
+            Debug.Log("QATask Canceled.");
         }
 
-        void SetProtocols()
+        public async void FinishWork()
         {
-            protocolTMP.SetText(protocols[order].Name);
+            StopQA();
+            Debug.Log("Finish work!");
+            await movieHandler.FinishRecording();
+            string movieList = movieHandler.movieList;
+            string moviePath = "";
+
+            GoProMedia mediaList = JsonUtility.FromJson<GoProMedia>(movieList);
+
+            // デシリアライズしたデータの確認
+            Debug.Log("Media ID: " + mediaList.id);
+            if(mediaList != null)
+            {
+                foreach (var folder in mediaList.media)
+                {
+                    Debug.Log("Folder: " + folder.d);
+                    List<GoProFile> files = folder.fs;
+                    moviePath = files.Last().n;
+                }
+
+                MoviePath path = new MoviePath();
+                path.Path = moviePath;
+                path.UserID = UserData.Id;
+                path.WorkID = UserData.work.ID;
+
+                dataManager.InsertMoviePath(path);
+            }
         }
     }
+
+    [Serializable]
+    public class GoProFile
+    {
+        public string n;    // ファイル名
+        public string cre;  // 作成日時（エポックタイム）
+        public string mod;  // 修正日時（エポックタイム）
+        public string glrv; // 追加データ
+        public string ls;   // その他のデータ
+        public string s;    // サイズ
+    }
+
+    [Serializable]
+    public class MediaFolder
+    {
+        public string d;       // ディレクトリ名
+        public List<GoProFile> fs; // ファイルのリスト
+    }
+
+    [Serializable]
+    public class GoProMedia
+    {
+        public string id;              // メディアID
+        public List<MediaFolder> media; // メディアフォルダのリスト
+    }
 }
+
+
 
 

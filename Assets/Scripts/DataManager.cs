@@ -91,4 +91,26 @@ public class DataManager : MonoBehaviour
         return DataService.GetQuestionsByProtocolId(protocolID);
     }
 
+    public void InsertResult(Result result)
+    {
+        DataService.InsertResult(result);
+    }
+
+    public List<Result> GetResultsByQuestionId(int questionId)
+    {
+        return DataService.GetResultsByQuestionId(questionId);
+    }
+
+    public void InsertMoviePath(MoviePath moviePath)
+    {
+        DataService.InsertMoviePath(moviePath);
+    }
+
+    public List<MoviePath> GetMoviePaths(int workID, int userId)
+    {
+        return DataService.GetMoviePathsByWorkAndUserId(workID, userId);
+    }
+
+    
+
 }

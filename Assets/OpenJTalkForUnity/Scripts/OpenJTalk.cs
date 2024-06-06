@@ -1,4 +1,4 @@
-﻿using JTalkDll;
+using JTalkDll;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
