@@ -267,11 +267,11 @@ public static class DataService
         }
     }
 
-    public static List<Result> GetResultsByQuestionId(int questionId)
+    public static List<Result> GetResultsByQuestionIdAndUserId(int questionId, int userId)
     {
         try
         {
-            return _database.Table<Result>().Where(r => r.QuestionId == questionId).ToList();
+            return _database.Table<Result>().Where(r => r.QuestionId == questionId && r.UserId == userId).ToList();
         }
         catch (Exception e)
         {

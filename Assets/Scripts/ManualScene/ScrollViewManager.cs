@@ -7,28 +7,14 @@ public class ScrollViewManager : MonoBehaviour
 {
     public GameObject workItemPrefab;
     public GameObject qaPrefab;
+    public DataManager dataManager;
     public Transform contentParent;
 
-    private List<WorkItem> workItems = new List<WorkItem>
-    {
-        new WorkItem { title = "バリ取り", progress = "100%" },
-        new WorkItem { question = "Q.切削速度や送り速度をどのように設定しましたか？", answer = "A.材料によって設定しています" },
-        new WorkItem { question = "Q.力加減を教えてください", answer = "A.気持ち強め" },
-        new WorkItem { question = "Q.切削深さをどのように決定しましたか？", answer = "A.図面通りに" },
-        new WorkItem { title = "バリ取り", progress = "60%" },
-        new WorkItem { question = "Q.力加減を教えてください", answer = "A.気持ち強め" },
-        new WorkItem { title = "バリ取り", progress = "90%" },
-        new WorkItem { question = "Q.力加減を教えてください", answer = "A.気持ち強め" },
-        new WorkItem { title = "バリ取り", progress = "50%" },
-        new WorkItem { question = "Q.力加減を教えてください", answer = "A.気持ち強め" },
-        new WorkItem { title = "バリ取り", progress = "700%" },
-        new WorkItem { question = "Q.力加減を教えてください", answer = "A.気持ち強め" },
-        new WorkItem { title = "バリ取り", progress = "80%" },
-        new WorkItem { question = "Q.力加減を教えてください", answer = "A.気持ち強め" },
-    };
-
+    private List<WorkItem> workItems;
     void Start()
     {
+        workItems = new List<WorkItem>();
+        GetData();
         PopulateScrollView();
     }
 
@@ -65,6 +51,26 @@ public class ScrollViewManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void GetData()
+    {   
+        List<Protocol> protocols = dataManager.GetProtocolsByWorkId(UserData.work.ID);
+        foreach (Protocol p in protocols)
+        {
+            workItems.Add(new WorkItem{title = p.Name});
+            List<Question> questions = dataManager.GetQuestionsByProtocolId(p.ID);
+            foreach(Question q in questions)
+            {
+                List<Result> results = dataManager.GetResultsByQuestionIdAndUserId(q.ID, UserData.Id);
+                foreach(Result r in results)
+                {
+                    workItems.Add(new WorkItem {question = q.Name, answer = r.Answer});
+                }
+            }
+        }
+
+
     }
 
     [System.Serializable]

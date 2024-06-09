@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.EventSystems;
+using Cysharp.Threading.Tasks;
+using UnityEngine.Networking;
+using System.Linq;
 
 namespace ManualSeane
 {
@@ -18,9 +21,14 @@ namespace ManualSeane
         public VideoPlayer videoPlayer2; // Video Player 2をInspectorからアサインしてください
         public Slider slider1; // Slider 1をInspectorからアサインしてください
         public Slider slider2; // Slider 2をInspectorからアサインしてください
+        public DataManager dataManager;
+        public string goProUri;
 
         void Start()
         {
+            videoPlayer1.url = "";
+            videoPlayer2.url = "";
+            GetVideo().Forget();
             // ボタンにクリックイベントを追加
             startButton.onClick.AddListener(PlayVideos);
             stopButton.onClick.AddListener(StopVideos);
@@ -44,6 +52,11 @@ namespace ManualSeane
 
         void PlayVideos()
         {
+            if(videoPlayer1.url == "" && videoPlayer2.url == "")
+            {
+                Debug.Log("Invalid URL!");
+                return;
+            }
             // 動画を再生
             videoPlayer1.Play();
             videoPlayer2.Play();
@@ -85,6 +98,17 @@ namespace ManualSeane
             {
                 videoPlayer2.Play(); // そうでなければ再生
             }
+        }
+
+        private async UniTaskVoid GetVideo()
+        {
+            List<MoviePath> moviePaths = dataManager.GetMoviePaths(UserData.work.ID, UserData.Id);
+            string moviePath = moviePaths.Last().Path;
+            string uri = $"{goProUri}{moviePath}";
+
+            videoPlayer1.url = uri;
+            videoPlayer2.url = uri;
+
         }
     }
 }

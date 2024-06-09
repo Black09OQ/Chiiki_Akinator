@@ -96,9 +96,9 @@ public class DataManager : MonoBehaviour
         DataService.InsertResult(result);
     }
 
-    public List<Result> GetResultsByQuestionId(int questionId)
+    public List<Result> GetResultsByQuestionIdAndUserId(int questionId, int userId)
     {
-        return DataService.GetResultsByQuestionId(questionId);
+        return DataService.GetResultsByQuestionIdAndUserId(questionId, userId);
     }
 
     public void InsertMoviePath(MoviePath moviePath)
