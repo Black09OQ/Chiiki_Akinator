@@ -22,6 +22,7 @@ namespace WorkScene
         [SerializeField] AudioManager audioManager;
         [SerializeField] GameObject workStartButton;
         [SerializeField] GameObject nextProtocolButton;
+        [SerializeField] GameObject connectingPanel;
 
         Work work;
 
@@ -46,6 +47,7 @@ namespace WorkScene
         // Start is called before the first frame update
         void Start()
         {
+            connectingPanel.SetActive(false);
             Init();
             work = UserData.work;
             workTMP.text = work.Name;
@@ -63,7 +65,9 @@ namespace WorkScene
 
         private async UniTaskVoid StartWork()
         {
+            connectingPanel.SetActive(true);
             await movieHandler.StartRecording();
+            connectingPanel.SetActive(false);
             workStartButton.SetActive(false);
             nextProtocolButton.SetActive(true);
             try
@@ -155,29 +159,33 @@ namespace WorkScene
         {
             StopQA();
             Debug.Log("Finish work!");
+            connectingPanel.SetActive(true);
             await movieHandler.FinishRecording();
+            connectingPanel.SetActive(false);
             string movieList = movieHandler.movieList;
             string moviePath = "";
 
-            GoProMedia mediaList = JsonUtility.FromJson<GoProMedia>(movieList);
-
-            // デシリアライズしたデータの確認
-            Debug.Log("Media ID: " + mediaList.id);
-            if(mediaList != null)
+            if(movieList != "")
             {
-                foreach (var folder in mediaList.media)
+                GoProMedia mediaList = JsonUtility.FromJson<GoProMedia>(movieList);
+                // デシリアライズしたデータの確認
+                Debug.Log("Media ID: " + mediaList.id);
+                if(mediaList != null)
                 {
-                    Debug.Log("Folder: " + folder.d);
-                    List<GoProFile> files = folder.fs;
-                    moviePath = files.Last().n;
+                    foreach (var folder in mediaList.media)
+                    {
+                        Debug.Log("Folder: " + folder.d);
+                        List<GoProFile> files = folder.fs;
+                        moviePath = files.Last().n;
+                    }
+
+                    MoviePath path = new MoviePath();
+                    path.Path = moviePath;
+                    path.UserID = UserData.Id;
+                    path.WorkID = UserData.work.ID;
+
+                    dataManager.InsertMoviePath(path);
                 }
-
-                MoviePath path = new MoviePath();
-                path.Path = moviePath;
-                path.UserID = UserData.Id;
-                path.WorkID = UserData.work.ID;
-
-                dataManager.InsertMoviePath(path);
             }
 
             SceneManager.LoadScene("HomeScene");

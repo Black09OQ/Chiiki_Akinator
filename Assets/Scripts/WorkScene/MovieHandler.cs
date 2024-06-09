@@ -17,6 +17,11 @@ public class MovieHandler : MonoBehaviour
     public string movieList;
 
     UnityWebRequest request;
+
+    void Start()
+    {
+        movieList = "";
+    }
     
     public async UniTask StartRecording()
     {
@@ -27,7 +32,6 @@ public class MovieHandler : MonoBehaviour
     public async UniTask FinishRecording()
     {
         await SendStopRecordRequest();
-        await SendGetMovieListRequest();
     }
 
     async void OnDestroy() {
@@ -39,7 +43,7 @@ public class MovieHandler : MonoBehaviour
     {
         
         Debug.Log("Sending...");
-        request = new UnityWebRequest($"{cameraUri}{modeChangePath}", "GET");
+        request = UnityWebRequest.Get($"{cameraUri}{modeChangePath}");
         
         try
         {
@@ -50,9 +54,11 @@ public class MovieHandler : MonoBehaviour
         catch (Exception ex)
         {
             Debug.Log($"Request error: {ex.Message}");
+            request.Dispose();
+            return;
         }        
 
-        request = new UnityWebRequest($"{cameraUri}{startRecordPath}", "GET");
+        request = UnityWebRequest.Get($"{cameraUri}{startRecordPath}");
         
         try
         {
@@ -64,11 +70,6 @@ public class MovieHandler : MonoBehaviour
             Debug.LogError($"Request Error: {ex.Message}");
         }
 
-
-
-
-
-
         request.Dispose();
     }
 
@@ -76,7 +77,7 @@ public class MovieHandler : MonoBehaviour
     // 録画停止リクエスト
     private async UniTask SendStopRecordRequest()
     {
-        request = new UnityWebRequest($"{cameraUri}{stopRecordPath}", "GET");
+        request = UnityWebRequest.Get($"{cameraUri}{stopRecordPath}");
 
         try
         {
@@ -86,14 +87,11 @@ public class MovieHandler : MonoBehaviour
         catch(Exception e)
         {
             Debug.Log($"Error: {e.Message}");
+            request.Dispose();
+            return;
         }
 
-        request.Dispose();
-    }
-
-    private async UniTask SendGetMovieListRequest()
-    {
-        UnityWebRequest request = UnityWebRequest.Get($"{cameraUri}{getMovieListPath}");
+        request = UnityWebRequest.Get($"{cameraUri}{getMovieListPath}");
         try
         {
             await request.SendWebRequest();
