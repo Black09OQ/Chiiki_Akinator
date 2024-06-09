@@ -4,7 +4,6 @@ using TMPro;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
-using Unity.VisualScripting;
 
 namespace WorkScene
 {
@@ -14,6 +13,8 @@ namespace WorkScene
         public DictationRecognizer m_DictationRecognizer;
 
         [SerializeField] WorkSceneManager manager;
+
+        SynchronizationContext context;
 
         // オブジェクトが破棄されるとき
         private void OnDestroy()
@@ -27,6 +28,7 @@ namespace WorkScene
         void Start()
         {
             m_DictationRecognizer = new DictationRecognizer();
+            context = SynchronizationContext.Current;
 
             // 発音終了時
             //DictationResultのイベントを登録
@@ -41,13 +43,9 @@ namespace WorkScene
         {
             try
             {
-                var dicTask = dictationTask(ct);
-                await UniTask.Delay(5000);
-                var delay = UniTask.Delay(15000);
-                await UniTask.WhenAny(dicTask,delay);
-                m_DictationRecognizer.Stop();
+                await dictationTask(ct);
             }
-            catch(OperationCanceledException e)
+            catch(OperationCanceledException)
             {
                 Debug.Log("Dictation canceled.");
             }
@@ -55,12 +53,19 @@ namespace WorkScene
 
         private async UniTask dictationTask(CancellationToken ct)
         {
+            string preText = text_.text;
             try
             {
-                m_DictationRecognizer.Start();
-                await UniTask.WaitUntil( ()=> m_DictationRecognizer.Status == SpeechSystemStatus.Stopped || m_DictationRecognizer.Status ==  SpeechSystemStatus.Failed);
+                context.Post(__ =>
+                {
+                    Debug.Log("Dictation Start");
+                    m_DictationRecognizer.Start();
+                }, null);
+                await UniTask.Delay(3000);
+
+                await UniTask.WaitUntil( ()=> text_.text != preText);
             }
-            catch(OperationCanceledException e)
+            catch(OperationCanceledException)
             {
                 Debug.Log("Dictation canceled.");
             }

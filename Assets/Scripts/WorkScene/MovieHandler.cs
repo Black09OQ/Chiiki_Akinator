@@ -18,43 +18,54 @@ public class MovieHandler : MonoBehaviour
 
     UnityWebRequest request;
     
-    public IEnumerator StartRecording()
+    public async UniTask StartRecording()
     {
         Debug.Log("Sending Record Start Request");
-        UniTask modeChange = UniTask.Run(()=>SendStartRecordRequest());
-        yield return new WaitUntil(() => modeChange.GetAwaiter().IsCompleted);
+        await SendStartRecordRequest();
     }
 
-    public IEnumerator FinishRecording()
+    public async UniTask FinishRecording()
     {
-        UniTask finishRecord = UniTask.Run(()=> SendStopRecordRequest());
-        new WaitUntil(() => finishRecord.GetAwaiter().IsCompleted);
-        
-        UniTask getMovieList = UniTask.Run(()=> SendGetMovieListRequest());
-        yield return new WaitUntil(() => getMovieList.GetAwaiter().IsCompleted);
-        
+        await SendStopRecordRequest();
+        await SendGetMovieListRequest();
     }
 
     async void OnDestroy() {
-        UniTask stopRecord = UniTask.Run(() => SendStopRecordRequest());
+        UniTask stopRecord = UniTask.RunOnThreadPool(() => SendStopRecordRequest());
         await UniTask.WaitUntil(()=> stopRecord.GetAwaiter().IsCompleted);
     }
 
-    public async void SendStartRecordRequest()
+    public async UniTask SendStartRecordRequest()
     {
         
         Debug.Log("Sending...");
-        request = new UnityWebRequest($"{cameraUri}/{modeChangePath}", "GET");
-        Debug.Log("Sending request to GoPro...");
-        await request.SendWebRequest();
-        Debug.Log(request.downloadHandler.text);
+        request = new UnityWebRequest($"{cameraUri}{modeChangePath}", "GET");
         
+        try
+        {
+            Debug.Log("Sending request to GoPro...");
+            await request.SendWebRequest();
+            Debug.Log(request.downloadHandler.text);
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Request error: {ex.Message}");
+        }        
 
-/*
         request = new UnityWebRequest($"{cameraUri}{startRecordPath}", "GET");
-        Debug.Log("Sending request to GoPro...");
-        await request.SendWebRequest();
-        Debug.Log(request.downloadHandler.text);*/
+        
+        try
+        {
+            Debug.Log("Sending request to GoPro...");
+            await request.SendWebRequest();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Request Error: {ex.Message}");
+        }
+
+
+
 
 
 
@@ -63,9 +74,9 @@ public class MovieHandler : MonoBehaviour
 
 
     // 録画停止リクエスト
-    private async void SendStopRecordRequest()
+    private async UniTask SendStopRecordRequest()
     {
-        request = new UnityWebRequest($"{cameraUri}/{stopRecordPath}", "GET");
+        request = new UnityWebRequest($"{cameraUri}{stopRecordPath}", "GET");
 
         try
         {
@@ -80,9 +91,9 @@ public class MovieHandler : MonoBehaviour
         request.Dispose();
     }
 
-    private async void SendGetMovieListRequest()
+    private async UniTask SendGetMovieListRequest()
     {
-        UnityWebRequest request = new UnityWebRequest($"{cameraUri}/{getMovieListPath}", "GET");
+        UnityWebRequest request = UnityWebRequest.Get($"{cameraUri}{getMovieListPath}");
         try
         {
             await request.SendWebRequest();

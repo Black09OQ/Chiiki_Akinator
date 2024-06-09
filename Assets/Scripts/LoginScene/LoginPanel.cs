@@ -65,6 +65,7 @@ namespace LoginScene{
 
             foreach(User user in primalyUsers)
             {
+                UserData.Id = user.ID;
                 UserData.UserId = user.UserID;
                 UserData.UserName = user.UserName;
             }

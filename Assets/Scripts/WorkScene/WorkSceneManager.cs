@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace WorkScene
 {
@@ -61,12 +61,11 @@ namespace WorkScene
             }
         }
 
-        public async void StartWork()
+        private async UniTaskVoid StartWork()
         {
             await movieHandler.StartRecording();
             workStartButton.SetActive(false);
             nextProtocolButton.SetActive(true);
-            /*
             try
             {
                 await RunQA(QACTS.Token);
@@ -75,8 +74,6 @@ namespace WorkScene
             {
                 Debug.Log("RunQA canceled.");
             }
-            */
-
         }
 
         async UniTask RunQA(CancellationToken cts)
@@ -100,7 +97,7 @@ namespace WorkScene
                     {
                         await talkHandler.StartSpeak(question.Name, QACTS.Token);
                     }
-                    catch (OperationCanceledException e)
+                    catch (OperationCanceledException)
                     {
                         Debug.Log("StartSpeak canceled");
                         talkHandler.Stop();
@@ -113,7 +110,7 @@ namespace WorkScene
                         audioManager.PlayCompleteSound();
                         await UniTask.Delay(1000);
                     }
-                    catch (OperationCanceledException e)
+                    catch (OperationCanceledException)
                     {
                         Debug.Log("Dictation task canceled");
                     }
@@ -142,7 +139,7 @@ namespace WorkScene
             {
                 await RunQA(QACTS.Token);
             }
-            catch(OperationCanceledException e)
+            catch(OperationCanceledException)
             {
                 Debug.Log("QATask Canceled.");
             }
@@ -182,6 +179,13 @@ namespace WorkScene
 
                 dataManager.InsertMoviePath(path);
             }
+
+            SceneManager.LoadScene("HomeScene");
+        }
+
+        public void OnWorkStartButtonDown()
+        {
+            StartWork().Forget();
         }
     }
 

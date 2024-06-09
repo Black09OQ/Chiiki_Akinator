@@ -11,9 +11,9 @@ public class OpenJTalkHandler : MonoBehaviour
     {
         try
         {
-            await UniTask.Run(() => OpenJTalk.SpeakStoppable(text));
+            await UniTask.RunOnThreadPool(() => OpenJTalk.SpeakStoppable(text));
         }
-        catch(OperationCanceledException e)
+        catch(OperationCanceledException)
         {
             Debug.Log("Speak stopped.");
             Stop();
