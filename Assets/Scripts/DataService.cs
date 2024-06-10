@@ -50,6 +50,7 @@ public static class DataService
             _database.CreateTable<Question>();
             _database.CreateTable<Result>();
             _database.CreateTable<MoviePath>();
+            _database.CreateTable<Evaluation>();
         }
         catch(Exception e)
         {
@@ -304,6 +305,33 @@ public static class DataService
         {
             Debug.LogError($"Failed to get MoviePaths: {e.Message}");
             return new List<MoviePath>();
+        }
+    }
+
+    // Evaluation -----------------------------------------------------------------------------------
+
+    public static void InsertEvaluation(Evaluation evaluation)
+    {
+        try
+        {
+            _database.Insert(evaluation);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to insert Evaluation: {e.Message}");
+        }
+    }
+
+    public static List<Evaluation> GetEvaluationByProtocolId(int protocolId)
+    {
+        try
+        {
+            return _database.Table<Evaluation>().Where(e => e.ProtocolID == protocolId).ToList();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to get Evaluation: {e.Message}");
+            return new List<Evaluation>();
         }
     }
 

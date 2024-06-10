@@ -111,6 +111,15 @@ public class DataManager : MonoBehaviour
         return DataService.GetMoviePathsByWorkAndUserId(workID, userId);
     }
 
-    
+    public void InsertEvaluation(Evaluation evaluation)
+    {
+        DataService.InsertEvaluation(evaluation);
+    }
+
+    public List<Evaluation> GetEvaluation(int protocolID)
+    {
+        return DataService.GetEvaluationByProtocolId(protocolID);
+    }
+
 
 }
