@@ -22,4 +22,9 @@ public class HomeSceneController : MonoBehaviour
     {
         SceneManager.LoadScene("ConfigScene");
     }
+
+    public void MoveQuestionGenerateScene()
+    {
+        SceneManager.LoadScene("QuestionGenerateScene");
+    }
 }
