@@ -188,7 +188,7 @@ namespace WorkScene
                 }
             }
 
-            SceneManager.LoadScene("HomeScene");
+            SceneManager.LoadScene("EvaluationScene");
         }
 
         public void OnWorkStartButtonDown()

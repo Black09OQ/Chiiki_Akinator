@@ -38,9 +38,10 @@ namespace EvaluationScene
         }
 
         // Start is called before the first frame update
-        void OnEnable()
+        void Start()
         {
             Init();
+            work = UserData.work;
 
             if (work != null)
             {
