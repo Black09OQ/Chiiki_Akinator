@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/WorkRegisterScene.unity
     guid: 6c8a11bbe03d48842909005dac59d9d0
   - enabled: 1
+    path: Assets/Scenes/QuestionGenerateScene.unity
+    guid: 996608bb586f43e4dbf6f28adc35748b
+  - enabled: 1
     path: Assets/Scenes/ManualSelectScene.unity
     guid: a775ee0cc654152408a44fbd605892f7
   - enabled: 1
