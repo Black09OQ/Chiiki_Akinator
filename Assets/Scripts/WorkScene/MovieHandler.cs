@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
 using System;
 using Unity.Collections;
+using System.Threading;
 
 public class MovieHandler : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class MovieHandler : MonoBehaviour
         
         Debug.Log("Sending...");
         request = UnityWebRequest.Get($"{cameraUri}{modeChangePath}");
+        request.timeout = 3000;
         
         try
         {
@@ -54,11 +56,19 @@ public class MovieHandler : MonoBehaviour
         catch (Exception ex)
         {
             Debug.Log($"Request error: {ex.Message}");
-            request.Dispose();
-            return;
+            if(request.isNetworkError)
+            {
+                if(request.error == "Request timeout")
+                {
+                    return;
+                }
+            }
+            //request.Dispose();
+            //return;
         }        
 
         request = UnityWebRequest.Get($"{cameraUri}{startRecordPath}");
+        request.timeout = 3000;
         
         try
         {
@@ -78,6 +88,7 @@ public class MovieHandler : MonoBehaviour
     private async UniTask SendStopRecordRequest()
     {
         request = UnityWebRequest.Get($"{cameraUri}{stopRecordPath}");
+        request.timeout = 3000;
 
         try
         {
@@ -88,10 +99,17 @@ public class MovieHandler : MonoBehaviour
         {
             Debug.Log($"Error: {e.Message}");
             request.Dispose();
-            return;
+            if(request.isNetworkError)
+            {
+                if(request.error == "Request timeout")
+                {
+                    return;
+                }
+            }
         }
 
         request = UnityWebRequest.Get($"{cameraUri}{getMovieListPath}");
+        request.timeout = 3000;
         try
         {
             await request.SendWebRequest();

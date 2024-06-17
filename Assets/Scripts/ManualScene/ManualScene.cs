@@ -24,6 +24,9 @@ namespace ManualSeane
         public DataManager dataManager;
         public string goProUri;
 
+        public VideoClip video1;
+
+        public VideoClip video2;
         void Start()
         {
             videoPlayer1.url = "";
@@ -55,7 +58,8 @@ namespace ManualSeane
             if(videoPlayer1.url == "" && videoPlayer2.url == "")
             {
                 Debug.Log("Invalid URL!");
-                return;
+                videoPlayer1.clip = video1;
+                videoPlayer2.clip = video1;
             }
             // 動画を再生
             videoPlayer1.Play();
